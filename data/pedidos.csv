@@ -1,0 +1,6 @@
+Pedido,Producto,Cantidad,Estado,Proveedor,Prioridad
+1001,Tomate,40,Retrasado,FreshFoods,Alta
+1002,Leche,10,OK,LacteosPlus,Baja
+1003,Queso,25,Retrasado,DairyCorp,Alta
+1004,Pan,15,OK,BakeryGroup,Media
+1005,Arroz,60,Retrasado,AgroSupply,Alta

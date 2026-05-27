@@ -1,0 +1,11 @@
+Pedido,Producto,Cantidad,Estado,Proveedor,Prioridad
+2001,Harina,120,Retrasado,AgroSupply,Alta
+2002,Leche,30,Retrasado,LacteosPlus,Alta
+2003,Huevos,50,OK,FarmFresh,Media
+2004,Queso,80,Retrasado,DairyCorp,Alta
+2005,Pan,25,OK,BakeryGroup,Baja
+2006,Tomate,90,Retrasado,FreshFoods,Alta
+2007,Aceite,40,Retrasado,OilMasters,Media
+2008,Arroz,100,Retrasado,AgroSupply,Alta
+2009,Pasta,70,OK,ItalianFoods,Baja
+2010,Pollo,60,Retrasado,MeatSupply,Alta
