@@ -129,8 +129,8 @@ if st.button("Generar informe IA"):
 
     with st.spinner("Generando informe IA..."):
 
-    informe = generar_informe_ia(incidencias_texto)
+        informe = generar_informe_ia(incidencias_texto)
 
-st.success("Informe generado.")
+    st.success("Informe generado.")
 
-st.write(informe)
+    st.write(informe)
