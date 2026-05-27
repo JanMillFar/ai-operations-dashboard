@@ -70,6 +70,38 @@
 
 # 
 
+# \### Main Operational Dashboard
+
+# 
+
+# !\[Dashboard Overview](assets/dashboard\_preview1.png)
+
+# 
+
+# \---
+
+# 
+
+# \### Incident Monitoring \& Risk Analysis
+
+# 
+
+# !\[Incident Analysis](assets/dashboard\_preview2.png)
+
+# 
+
+# \---
+
+# 
+
+# \### Dynamic Filtering \& CSV Upload
+
+# 
+
+# !\[CSV Upload](assets/dashboard\_preview3.png)
+
+# 
+
 # \### Main Dashboard
 
 # (Add screenshot here later)
