@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-from ai_report import generar_informe_ia
+# from ai_report import generar_informe_ia
 
 # Configuració pàgina
 st.set_page_config(
@@ -120,17 +120,17 @@ else:
         "Operativa estable."
     )
 
-# INFORME IA
-st.subheader("Informe IA")
-
-if st.button("Generar informe IA"):
-
-    incidencias_texto = incidencias.to_string(index=False)
-
-    with st.spinner("Generando informe IA..."):
-
-        informe = generar_informe_ia(incidencias_texto)
-
-    st.success("Informe generado.")
-
-    st.write(informe)
+# # INFORME IA
+# st.subheader("Informe IA")
+#
+# if st.button("Generar informe IA"):
+#
+#     incidencias_texto = incidencias.to_string(index=False)
+#
+#     with st.spinner("Generando informe IA..."):
+#
+#         informe = generar_informe_ia(incidencias_texto)
+#
+#     st.success("Informe generado.")
+#
+#     st.write(informe)
