@@ -30,7 +30,7 @@ if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
 
 else:
-    df = pd.read_csv("data/pedidos.csv")
+    df = pd.read_csv("data/pedidos_criticos.csv")
 
 # Filtres
 st.sidebar.header("Filtros")
