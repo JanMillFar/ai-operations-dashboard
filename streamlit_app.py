@@ -1,136 +1,165 @@
 import streamlit as st
 import pandas as pd
+import matplotlib.pyplot as plt
+from ai_report import generar_informe_ia
+from pdf_report import generar_pdf
 
-# from ai_report import generar_informe_ia
-
-# Configuració pàgina
+# CONFIGURACIÓN PÁGINA
 st.set_page_config(
     page_title="AI Operations Dashboard",
+    page_icon="📊",
     layout="wide"
 )
 
-# Títol
-st.title("AI Operations Dashboard")
+# HEADER
+st.title("📊 AI Operations Dashboard")
 
-st.markdown(
-    "Monitorización logística y operacional en tiempo real."
-)
+st.markdown("""
+Real-time operational monitoring platform with risk analysis,
+incident tracking and AI-powered operational insights.
+""")
+
+st.divider()
+
+# CARGAR DATOS
+df = pd.read_csv("data/pedidos_criticos.csv")
 
 # SIDEBAR
-st.sidebar.header("Configuración")
+st.sidebar.header("Filters")
 
-# Upload CSV
-uploaded_file = st.sidebar.file_uploader(
-    "Subir archivo CSV",
-    type=["csv"]
+proveedor = st.sidebar.selectbox(
+    "Select Supplier",
+    ["All"] + list(df["Proveedor"].unique())
 )
 
-# Llegir dades
-if uploaded_file is not None:
-    df = pd.read_csv(uploaded_file)
-
-else:
-    df = pd.read_csv("data/pedidos_criticos.csv")
-
-# Filtres
-st.sidebar.header("Filtros")
-
-estado_filtro = st.sidebar.multiselect(
-    "Estado",
-    options=df["Estado"].unique(),
-    default=df["Estado"].unique()
+estado = st.sidebar.selectbox(
+    "Select Status",
+    ["All"] + list(df["Estado"].unique())
 )
 
-proveedor_filtro = st.sidebar.multiselect(
-    "Proveedor",
-    options=df["Proveedor"].unique(),
-    default=df["Proveedor"].unique()
-)
+# FILTROS
+if proveedor != "All":
+    df = df[df["Proveedor"] == proveedor]
 
-# Aplicar filtres
-df_filtrado = df[
-    (df["Estado"].isin(estado_filtro)) &
-    (df["Proveedor"].isin(proveedor_filtro))
-]
+if estado != "All":
+    df = df[df["Estado"] == estado]
 
-# KPIs
-total_pedidos = len(df_filtrado)
-retrasados = len(
-    df_filtrado[df_filtrado["Estado"] == "Retrasado"]
-)
-ok = len(
-    df_filtrado[df_filtrado["Estado"] == "OK"]
-)
+# INCIDENCIAS
+incidencias = df[df["Estado"] == "Retrasado"]
 
-# KPI Cards
+# KPI CARDS
 col1, col2, col3 = st.columns(3)
 
-col1.metric("Total pedidos", total_pedidos)
-col2.metric("Pedidos OK", ok)
-col3.metric("Pedidos retrasados", retrasados)
+with col1:
+    st.metric(
+        label="📦 Total Orders",
+        value=len(df)
+    )
 
-# Taula principal
-st.subheader("Pedidos")
+with col2:
+    st.metric(
+        label="⚠️ Delayed Orders",
+        value=len(incidencias)
+    )
 
-st.dataframe(df_filtrado)
+with col3:
 
-# Incidències
-incidencias = df_filtrado[
-    df_filtrado["Estado"] == "Retrasado"
-]
+    riesgo = "HIGH" if len(incidencias) >= 3 else "MEDIUM"
 
-st.subheader("Incidencias críticas")
+    st.metric(
+        label="🚨 Operational Risk",
+        value=riesgo
+    )
+
+st.divider()
+
+# TABLA PRINCIPAL
+st.subheader("📋 Orders Overview")
+
+st.dataframe(df)
+
+# TABLA INCIDENCIAS
+st.subheader("⚠️ Delayed Orders")
 
 st.dataframe(incidencias)
 
-# Gràfic
-st.subheader("Proveedores con incidencias")
+# GRÁFICO
+st.subheader("📊 Incidents by Supplier")
 
-st.bar_chart(
-    incidencias["Proveedor"].value_counts()
+grafico = incidencias["Proveedor"].value_counts()
+
+if not grafico.empty:
+
+    fig, ax = plt.subplots()
+
+    grafico.plot(
+        kind="bar",
+        ax=ax
+    )
+
+    ax.set_xlabel("Supplier")
+    ax.set_ylabel("Incidents")
+
+    st.pyplot(fig)
+
+else:
+
+    st.info("No incident data available for selected filters.")
+
+# RECOMENDACIÓN AUTOMÁTICA
+st.subheader("🤖 Automated Recommendation")
+
+if len(incidencias) >= 3:
+
+    st.warning(
+        "High operational risk detected. Review critical suppliers and prioritize urgent deliveries."
+    )
+
+else:
+
+    st.success(
+        "Operational flow stable."
+    )
+
+# UPLOAD CSV
+st.subheader("📂 Upload CSV")
+
+uploaded_file = st.file_uploader(
+    "Upload operational dataset",
+    type=["csv"]
 )
 
-# Risc operacional
-st.subheader("Riesgo operacional")
+if uploaded_file is not None:
 
-if retrasados >= 3:
-    st.error("🔴 RIESGO OPERATIVO ALTO")
+    nuevo_df = pd.read_csv(uploaded_file)
 
-elif retrasados >= 1:
-    st.warning("🟠 RIESGO OPERATIVO MEDIO")
+    st.write("Uploaded dataset:")
 
-else:
-    st.success("🟢 RIESGO OPERATIVO BAJO")
+    st.dataframe(nuevo_df)
 
-# Recomanació automàtica
-st.subheader("Recomendación automática")
+# IA REPORT
+st.subheader("🧠 AI Executive Analysis")
 
-if retrasados >= 3:
-    st.write(
-        "Revisar proveedores críticos y priorizar entregas urgentes."
-    )
+if st.button("Generate AI Report"):
 
-elif retrasados >= 1:
-    st.write(
-        "Monitorizar incidencias y revisar tiempos de entrega."
-    )
+    incidencias_texto = incidencias.to_string()
 
-else:
-    st.write(
-        "Operativa estable."
-    )
+    with st.spinner("Generating AI operational analysis..."):
 
-# # INFORME IA
-# st.subheader("Informe IA")
-#
-# if st.button("Generar informe IA"):
-#
-#     incidencias_texto = incidencias.to_string(index=False)
-#
-#     with st.spinner("Generando informe IA..."):
-#
-#         informe = generar_informe_ia(incidencias_texto)
-#
-#     st.success("Informe generado.")
-#
-#     st.write(informe)
+        informe = generar_informe_ia(incidencias_texto)
+
+    st.success("AI report generated successfully.")
+
+    st.markdown(informe)
+
+    # GENERAR PDF
+    pdf_path = generar_pdf(informe)
+
+    with open(pdf_path, "rb") as pdf_file:
+
+        st.download_button(
+            label="📥 Download Executive PDF Report",
+            data=pdf_file,
+            file_name="executive_report.pdf",
+            mime="application/pdf"
+        )
