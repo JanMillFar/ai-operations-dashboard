@@ -1,16 +1,21 @@
-from groq import Groq
-from groq_config import get_groq_model, get_groq_setting, is_groq_enabled
+from google import genai
+
+from gemini_config import (
+    get_gemini_free_model,
+    get_gemini_setting,
+    is_gemini_free_enabled,
+)
 
 # FUNCIÓN IA
 def generar_informe_ia(incidencias_texto):
-    if not is_groq_enabled():
-        raise RuntimeError("Groq is disabled to prevent API charges.")
+    if not is_gemini_free_enabled():
+        raise RuntimeError("Gemini Free is disabled to prevent unintended API charges.")
 
-    api_key = get_groq_setting("GROQ_API_KEY")
+    api_key = get_gemini_setting("GEMINI_API_KEY")
     if not api_key:
-        raise RuntimeError("GROQ_API_KEY is not configured.")
+        raise RuntimeError("GEMINI_API_KEY is not configured.")
 
-    client = Groq(api_key=api_key)
+    client = genai.Client(api_key=api_key)
 
     prompt = f"""
     Analyze the following operational incidents and generate:
@@ -24,16 +29,10 @@ def generar_informe_ia(incidencias_texto):
     {incidencias_texto}
     """
 
-    completion = client.chat.completions.create(
-        model=get_groq_model(),
-        messages=[
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ],
-        temperature=0.4,
-        max_tokens=500
+    interaction = client.interactions.create(
+        model=get_gemini_free_model(),
+        input=prompt,
+        store=False,
     )
 
-    return completion.choices[0].message.content
+    return interaction.output_text
