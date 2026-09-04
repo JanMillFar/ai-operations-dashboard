@@ -1,7 +1,5 @@
 streamlit
 pandas
 matplotlib
-openai
-groq>=1.7,<2
-python-dotenv
+google-genai>=1,<2
 reportlab
