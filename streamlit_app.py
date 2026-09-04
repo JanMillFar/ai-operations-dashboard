@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from ai_report import generar_informe_ia
 from pdf_report import generar_pdf
+from groq_config import is_groq_enabled
 
 # CONFIGURACIÓN PÁGINA
 st.set_page_config(
@@ -140,7 +141,10 @@ if uploaded_file is not None:
 # IA REPORT
 st.subheader("🧠 AI Executive Analysis")
 
-if st.button("Generate AI Report"):
+if not is_groq_enabled():
+    st.info("AI analysis is disabled to prevent Groq API charges.")
+
+elif st.button("Generate AI Report"):
 
     incidencias_texto = incidencias.to_string()
 
